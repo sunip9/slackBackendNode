@@ -3,7 +3,8 @@ import Jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET || "fallback-secret-change-in-production";
+const JWT_SECRET =
+  process.env.JWT_SECRET || "fallback-secret-change-in-production";
 
 interface UserPayload {
   id: string;
@@ -21,7 +22,7 @@ declare global {
 export const currentUser = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   // if (!req.session?.jwt) {
   //   return next();

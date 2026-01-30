@@ -13,16 +13,15 @@ const router = express.Router();
  */
 
 const authFieldValidation = [
-  body("email")
-    .isEmail()
-    .withMessage("Email must be valid")
-    .normalizeEmail(),
+  body("email").isEmail().withMessage("Email must be valid").normalizeEmail(),
   body("password")
     .trim()
     .isLength({ min: 8, max: 128 })
     .withMessage("Password must be between 8 and 128 characters")
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/)
-    .withMessage("Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"),
+    .withMessage(
+      "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+    ),
 ];
 
 router.post("/api/user/signup", authFieldValidation, validateRequest, signUp);

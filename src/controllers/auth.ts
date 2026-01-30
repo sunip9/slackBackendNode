@@ -6,7 +6,8 @@ import Jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET || "fallback-secret-change-in-production";
+const JWT_SECRET =
+  process.env.JWT_SECRET || "fallback-secret-change-in-production";
 const COOKIE_EXPIRES_DAYS = parseInt(process.env.COOKIE_EXPIRES_DAYS || "30");
 
 export const signUp = async (req: Request, res: Response) => {
@@ -24,20 +25,22 @@ export const signUp = async (req: Request, res: Response) => {
       email: user.email,
     },
     JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRES_IN || "30d" }
   );
-  
+
   const cookieOptions = {
     expires: new Date(Date.now() + COOKIE_EXPIRES_DAYS * 24 * 60 * 60 * 1000),
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict" as const,
   };
-  
-  res.status(201).cookie("token", userJwt, cookieOptions).json({ 
-    user: { id: user.id, email: user.email }, 
-    token: userJwt 
-  });
+
+  res
+    .status(201)
+    .cookie("token", userJwt, cookieOptions)
+    .json({
+      user: { id: user.id, email: user.email },
+      token: userJwt,
+    });
 };
 
 export const signIn = async (req: Request, res: Response) => {
@@ -58,16 +61,15 @@ export const signIn = async (req: Request, res: Response) => {
       email: existingUser.email,
     },
     JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRES_IN || "30d" }
   );
-  
+
   const cookieOptions = {
     expires: new Date(Date.now() + COOKIE_EXPIRES_DAYS * 24 * 60 * 60 * 1000),
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict" as const,
   };
-  
+
   res
     .status(200)
     .cookie("token", userJwt, cookieOptions)
