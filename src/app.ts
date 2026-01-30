@@ -2,14 +2,17 @@ import express from "express";
 //express-async-errors for throw err for async req.
 import "express-async-errors";
 import { errorHandler } from "./middleware/error";
+import { requestLogger } from "./middleware/request-logger";
 import userRouter from "./routes/users";
 import authRouter from "./routes/auth";
+import healthRouter from "./routes/health";
 import { NotFoundError } from "./errors/not-found-error";
 // import cookieSession from "cookie-session";
 import cookieParser from "cookie-parser";
 import swaggerJsDoc from "swagger-jsdoc";
 import swaggerUI from "swagger-ui-express";
 import cors from "cors";
+import Logger from "./config/logger";
 
 const app = express();
 
@@ -57,6 +60,12 @@ const options: cors.CorsOptions = {
 app.use(cors(options));
 
 app.use(cookieParser());
+
+// Add request logging middleware
+app.use(requestLogger);
+
+// Health check routes (no logging needed)
+app.use(healthRouter);
 
 app.use(userRouter);
 app.use(authRouter);
