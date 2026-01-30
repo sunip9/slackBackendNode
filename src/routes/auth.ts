@@ -24,13 +24,13 @@ const authFieldValidation = [
     ),
 ];
 
-router.post("/api/user/signup", authFieldValidation, validateRequest, signUp);
+router.post("/auth/register", authFieldValidation, validateRequest, signUp);
 
-router.post("/api/user/signin", authFieldValidation, validateRequest, signIn);
+router.post("/api/signin", authFieldValidation, validateRequest, signIn);
 
-router.get("/api/user/currentuser", currentUser, requireAuth, (req, res) => {
+router.get("/api/currentuser", currentUser, requireAuth, (req, res) => {
   res.send({ currentUser: req.currentUser || null });
 });
-router.post("/api/user/signout", signOut);
+router.post("/api/signout", signOut);
 
 export default router;

@@ -1,16 +1,15 @@
 import { Request, Response, NextFunction } from "express";
-import UserRepo from "../repos/user-repo";
-import multer from "multer";
-const upload = multer();
+import { getUserService } from "../container";
 
-export const getUsers = async (req: Request, res: Response) => {
-  const users = await UserRepo.find();
-  const { count } = await UserRepo.count();
+const userService = getUserService();
+
+export const getUsers = async (_req: Request, res: Response) => {
+  const { count, users } = await userService.getAllUsers();
 
   res.status(200).json({
     status: 200,
     success: true,
-    count: parseInt(count),
+    count,
     data: users,
   });
 };
@@ -18,18 +17,18 @@ export const getUsers = async (req: Request, res: Response) => {
 export const getUser = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const { id } = req.params;
   try {
-    const users = await UserRepo.findById(id);
+    const users = await userService.getUserById(parseInt(id));
     if (users.length == 0) {
       res.status(400).json({
         status: 400,
         success: true,
         data: "User Data not found !",
       });
-      //   next(err);
+      return;
     }
     res.status(200).json({
       status: 200,
@@ -43,7 +42,7 @@ export const getUser = async (
 
 export const addUser = async (req: Request, res: Response) => {
   const { username, password, email } = req.body;
-  const users = await UserRepo.insert(username, password, email);
+  const users = await userService.createUser(username, password, email);
   res.status(200).json({
     status: 200,
     success: true,
@@ -54,7 +53,12 @@ export const addUser = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { username, password, email } = req.body;
-  const users = await UserRepo.update(id, username, password, email);
+  const users = await userService.updateUser(
+    parseInt(id),
+    username,
+    password,
+    email,
+  );
   res.status(200).json({
     status: 200,
     success: true,
@@ -64,7 +68,7 @@ export const updateUser = async (req: Request, res: Response) => {
 
 export const deleteUser = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const users = await UserRepo.delete(id);
+  const users = await userService.deleteUser(parseInt(id));
   if (users.length == 0) {
     res.status(400).json({
       status: 400,

@@ -62,7 +62,7 @@ app.use(userRouter);
 app.use(authRouter);
 
 app.set("view engine", "ejs");
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
   res.render("index");
 });
 app.all("*", async () => {
